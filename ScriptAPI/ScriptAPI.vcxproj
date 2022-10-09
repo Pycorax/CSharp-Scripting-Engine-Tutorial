@@ -85,7 +85,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
     <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
-    <LibraryPath>$(OutDir)</LibraryPath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EngineInterface.hxx" />
+    <ClInclude Include="Script.hxx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineInterface.cxx" />

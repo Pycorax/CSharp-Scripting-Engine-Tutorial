@@ -15,6 +15,10 @@ namespace Core
     class DLL_API Application
     {
       public:
+        static constexpr int ENTITY_COUNT = 5;
+        static constexpr int MIN_ENTITY_ID = 0;
+        static constexpr int MAX_ENTITY_ID = ENTITY_COUNT - 1;
+
         void Run();
 
         static void HelloWorld();

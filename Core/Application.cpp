@@ -6,6 +6,7 @@
 #include <Windows.h>                // GetKeyState()
 #include <shlwapi.h>                // GetModuleFileNameA(), PathRemoveFileSpecA()
 #include <array>
+#include <filesystem>               // std::filesystem::current_path()
 
 #pragma comment(lib, "shlwapi.lib") // Needed for <shlwapi.h>
 
@@ -15,19 +16,38 @@ namespace Core
     {
         startScriptEngine();
 
-        void(*hwFunc)(void) = GetFunctionPtr<void(*)(void)>
+        // Get Functions
+        auto init = GetFunctionPtr<void(*)(void)>
         (
             "ScriptAPI",
             "ScriptAPI.EngineInterface",
-            "HelloWorld"
+            "Init"
         );
-        hwFunc();
+        auto addScript = GetFunctionPtr<bool(*)(int, const char*)>
+        (
+            "ScriptAPI",
+            "ScriptAPI.EngineInterface",
+            "AddScriptViaName"
+        );
+        auto executeUpdate = GetFunctionPtr<void(*)(void)>
+        (
+            "ScriptAPI",
+            "ScriptAPI.EngineInterface",
+            "ExecuteUpdate"
+        );
+
+        // Initialize
+        init();
+
+        addScript(0, "TestScript");
 
         // Load
         while (true)
         {
             if (GetKeyState(VK_ESCAPE) & 0x8000)
                 break;
+
+            executeUpdate();
         }
 
         stopScriptEngine();
@@ -45,6 +65,9 @@ namespace Core
         PathRemoveFileSpecA(runtimePath.data());
         // Since PathRemoveFileSpecA() removes from data(), the size is not updated, so we must manually update it
         runtimePath.resize(std::strlen(runtimePath.data()));
+
+        // Also, while we're at it, set the current working directory to the current executable directory
+        std::filesystem::current_path(runtimePath);
 
         // Construct the CoreCLR path
         std::string coreClrPath(runtimePath); // Works
@@ -78,8 +101,8 @@ namespace Core
         // Step 4: Start the CoreCLR runtime
         int result = initializeCoreClr
         (
-			runtimePath.c_str(),     // AppDomain base path
-			"SampleHost",            // AppDomain friendly name, this can be anything you want really
+            runtimePath.c_str(),     // AppDomain base path
+            "SampleHost",            // AppDomain friendly name, this can be anything you want really
             propertyKeys.size(),     // Property count
             propertyKeys.data(),     // Property names
             propertyValues.data(),   // Property values
