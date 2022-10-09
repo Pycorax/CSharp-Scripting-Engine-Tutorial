@@ -2,7 +2,7 @@
 
 namespace ScriptAPI
 {
-    public ref class Script
+    public ref class Script abstract
     {
       public:
         void virtual Update() {};
