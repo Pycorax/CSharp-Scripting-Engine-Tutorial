@@ -1,5 +1,5 @@
 # C# Scripting Engine Tutorial Sample
-Sample solution for a .NET 6.0 based C# scripting engine described at https://kahwei.xyz/2022/05/07/c-scripting-engine-part-1-introduction/
+Sample solution for a .NET 6.0 based C# scripting engine described at https://kahwei.dev/2022/05/07/c-scripting-engine-part-1-introduction/
 
 ## Credits
 
