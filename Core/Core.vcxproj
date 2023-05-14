@@ -45,12 +45,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)extern\dotnet\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)extern\dotnet\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

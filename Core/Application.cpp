@@ -12,6 +12,8 @@
 
 namespace Core
 {
+    std::array<TransformComponent, Application::ENTITY_COUNT> Application::nativeData;
+
     void Application::Run()
     {
         startScriptEngine();
@@ -57,6 +59,15 @@ namespace Core
     {
         std::cout << "Hello Native World!" << std::endl;
     }
+
+    TransformComponent* Application::GetComponent(int entityId)
+    {
+        if (entityId < MIN_ENTITY_ID || entityId > MAX_ENTITY_ID)
+            return nullptr;
+
+        return &nativeData[entityId];
+    }
+
     void Application::startScriptEngine()
     {
         // Get the current executable directory so that we can find the coreclr.dll to load

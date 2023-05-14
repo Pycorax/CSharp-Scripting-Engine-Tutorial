@@ -84,12 +84,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(OutDir)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -135,9 +135,12 @@
   <ItemGroup>
     <ClInclude Include="EngineInterface.hxx" />
     <ClInclude Include="Script.hxx" />
+    <ClInclude Include="TransformComponent.hxx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineInterface.cxx" />
+    <ClCompile Include="Script.cxx" />
+    <ClCompile Include="TransformComponent.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

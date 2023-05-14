@@ -1,7 +1,11 @@
-﻿public class TestScript : ScriptAPI.Script
+﻿using ScriptAPI;
+
+public class TestScript : Script
 {
     public override void Update()
     {
-        Console.WriteLine("Test!");
+        TransformComponent tf = GetTransformComponent();
+        tf.X += 1.0f;
+        Console.WriteLine($"x: {tf.X}");
     }
 }

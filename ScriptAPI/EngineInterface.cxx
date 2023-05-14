@@ -45,7 +45,7 @@ namespace ScriptAPI
 
         // Create the script
         Script^ script = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
-
+        script->SetEntityId(entityId);
         
         // Add the script
         scripts[entityId]->Add(script);

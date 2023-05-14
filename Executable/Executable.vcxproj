@@ -45,14 +45,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)extern\dotnet\include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir).bin\$(Configuration)-$(Platform)</OutDir>
-    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir).tmp\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)extern\dotnet\include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>

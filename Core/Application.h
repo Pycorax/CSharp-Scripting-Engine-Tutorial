@@ -12,6 +12,13 @@
 
 namespace Core
 {
+    class DLL_API TransformComponent
+    {
+      public: 
+        float x = 0.0f;
+        float y = 0.0f;
+    };
+
     class DLL_API Application
     {
       public:
@@ -22,6 +29,7 @@ namespace Core
         void Run();
 
         static void HelloWorld();
+        static TransformComponent* GetComponent(int entityId);
 
       private:
         void startScriptEngine();
@@ -36,6 +44,8 @@ namespace Core
         coreclr_initialize_ptr      initializeCoreClr = nullptr;
         coreclr_create_delegate_ptr createManagedDelegate = nullptr;
         coreclr_shutdown_ptr        shutdownCoreClr = nullptr;
+        // Native Data
+        static std::array<TransformComponent, ENTITY_COUNT> nativeData;
 
         // Helper Functions
         template<typename FunctType>
