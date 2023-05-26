@@ -1,5 +1,6 @@
 #include "EngineInterface.hxx"
 #include "../Core/Application.h"
+#include "Debug.hxx"
 
 namespace ScriptAPI
 {
@@ -21,6 +22,7 @@ namespace ScriptAPI
 
     bool EngineInterface::AddScriptViaName(int entityId, System::String^ scriptName)
     {
+        SAFE_NATIVE_CALL_BEGIN
         // Check if valid entity
         if (entityId < Core::Application::MIN_ENTITY_ID || entityId > Core::Application::MAX_ENTITY_ID)
             return false;
@@ -50,6 +52,8 @@ namespace ScriptAPI
         // Add the script
         scripts[entityId]->Add(script);
         return true;
+        SAFE_NATIVE_CALL_END
+        return false;
     }
 
     void EngineInterface::ExecuteUpdate()
@@ -59,7 +63,9 @@ namespace ScriptAPI
             // Update each script
             for each (Script^ script in entityScriptList)
             {
+                SAFE_NATIVE_CALL_BEGIN
                 script->Update();
+                SAFE_NATIVE_CALL_END
             }
         }
     }

@@ -11,6 +11,9 @@ namespace ScriptAPI
 
         TransformComponent GetTransformComponent();
 
+        void CreateNativeException();
+        void CreateSEHException();
+
       internal:
         void SetEntityId(int id);
 

@@ -24,6 +24,9 @@
     <ClInclude Include="TransformComponent.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Debug.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineInterface.cxx">
