@@ -6,8 +6,19 @@ namespace ScriptAPI
 {
     void EngineInterface::Init()
     {
+        using namespace System::IO;
+
+        loadContext = 
+            gcnew System::Runtime::Loader::AssemblyLoadContext(nullptr, true);
+
         // Load assembly
-        System::Reflection::Assembly::LoadFrom("ManagedScripts.dll");
+        FileStream^ managedLibFile = File::Open
+        (
+            "ManagedScripts.dll",
+            FileMode::Open, FileAccess::Read, FileShare::Read
+        );
+        loadContext->LoadFromStream(managedLibFile);
+        managedLibFile->Close();
 
         // Create our script storage
         scripts = gcnew System::Collections::Generic::List<ScriptList^>();
@@ -68,6 +79,24 @@ namespace ScriptAPI
                 SAFE_NATIVE_CALL_END
             }
         }
+    }
+
+    void EngineInterface::Reload()
+    {
+        // Clear all references to types in the script assembly we are going to unload
+        scripts->Clear();
+        scriptTypeList = nullptr;
+
+        // Unload
+        loadContext->Unload();
+        loadContext = nullptr;
+
+        // Wait for unloading to finish
+        System::GC::Collect();
+        System::GC::WaitForPendingFinalizers();
+
+        // Load the assembly again
+        Init();
     }
 
     namespace

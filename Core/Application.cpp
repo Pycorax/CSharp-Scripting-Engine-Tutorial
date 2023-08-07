@@ -17,6 +17,7 @@ namespace Core
     void Application::Run()
     {
         startScriptEngine();
+        compileScriptAssembly();
 
         // Get Functions
         auto init = GetFunctionPtr<void(*)(void)>
@@ -37,6 +38,12 @@ namespace Core
             "ScriptAPI.EngineInterface",
             "ExecuteUpdate"
         );
+        auto reloadScripts = GetFunctionPtr<void(*)(void)>
+        (
+            "ScriptAPI",
+            "ScriptAPI.EngineInterface",
+            "Reload"
+        );
 
         // Initialize
         init();
@@ -48,6 +55,13 @@ namespace Core
         {
             if (GetKeyState(VK_ESCAPE) & 0x8000)
                 break;
+
+            if (GetKeyState(VK_SPACE) & 0x8000)
+            {
+                compileScriptAssembly();
+                reloadScripts();
+                addScript(0, "TestScript");
+            }
 
             executeUpdate();
         }
@@ -166,5 +180,73 @@ namespace Core
         }
 
         return tpaList.str();
+    }
+    void Application::compileScriptAssembly()
+    {  
+        const char* PROJ_PATH =
+            "..\\..\\ManagedScripts\\ManagedScripts.csproj";
+        std::wstring buildCmd = L" build \"" +
+            std::filesystem::absolute(PROJ_PATH).wstring() +
+            L"\" -c Debug --no-self-contained " +
+            L"-o \"./tmp_build/\" -r \"win-x64\"";
+
+        // Define the struct to config the compiler process call
+        STARTUPINFOW startInfo;
+        PROCESS_INFORMATION pi;
+        ZeroMemory(&startInfo, sizeof(startInfo));
+        ZeroMemory(&pi, sizeof(pi));
+        startInfo.cb = sizeof(startInfo);
+
+        // Start compiler process
+        const auto SUCCESS = CreateProcess
+        (
+            L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
+            nullptr, nullptr, true, NULL, nullptr, nullptr,
+            &startInfo, &pi
+        );
+
+        // Check that we launched the process
+        if (!SUCCESS)
+        {
+            auto err = GetLastError();
+            std::ostringstream oss;
+            oss << "Failed to launch compiler. Error code: " << std::hex << err;
+            throw std::runtime_error(oss.str());
+        }
+
+        // Wait for process to end
+        DWORD exitCode{};
+        while (true)
+        {
+            const auto EXEC_SUCCESS = GetExitCodeProcess(pi.hProcess, &exitCode);
+            if (!EXEC_SUCCESS)
+            {
+                auto err = GetLastError();
+                std::ostringstream oss;
+                oss << "Failed to query process. Error code: " << std::hex << err;
+                throw std::runtime_error(oss.str());
+            }
+
+            if (exitCode != STILL_ACTIVE)
+                break;
+        }
+
+        // Successful build
+        if (exitCode == 0)
+        {
+            // Copy out files
+            std::filesystem::copy_file
+            (
+                "./tmp_build/ManagedScripts.dll",
+                "ManagedScripts.dll",
+                std::filesystem::copy_options::overwrite_existing
+            );
+
+        }
+        // Failed build
+        else
+        {
+            throw std::runtime_error("Failed to build managed scripts!");
+        }
     }
 }

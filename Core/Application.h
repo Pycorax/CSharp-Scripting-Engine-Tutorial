@@ -35,6 +35,7 @@ namespace Core
         void startScriptEngine();
         void stopScriptEngine();
         std::string buildTpaList(const std::string& directory);
+        void compileScriptAssembly();
 
         // References to CoreCLR key components
         HMODULE coreClr = nullptr;
