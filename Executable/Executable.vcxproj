@@ -71,8 +71,7 @@
       <AdditionalDependencies>Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(OutDir)net6.0" "$(OutDir)"
-rmdir /s /q "$(OutDir)net6.0"
+      <Command>
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -94,8 +93,7 @@ rmdir /s /q "$(OutDir)net6.0"
       <AdditionalDependencies>Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(OutDir)net6.0" "$(OutDir)"
-rmdir /s /q "$(OutDir)net6.0"
+      <Command>
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
