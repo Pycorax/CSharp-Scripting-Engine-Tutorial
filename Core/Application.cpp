@@ -241,7 +241,20 @@ namespace Core
                 "ManagedScripts.dll",
                 std::filesystem::copy_options::overwrite_existing
             );
-
+            // Copy out the pdb file too
+            try
+            {
+                std::filesystem::copy_file
+                (
+                    "./tmp_build/ManagedScripts.pdb",
+                    "ManagedScripts.pdb",
+                    std::filesystem::copy_options::overwrite_existing
+                );
+            }
+            catch (const std::filesystem::filesystem_error& e)
+            {
+                throw std::runtime_error("Failed to overwrite .PDB file. Is a debugger attached?");
+            }
         }
         // Failed build
         else
