@@ -84,6 +84,11 @@ namespace Core
 
     void Application::startScriptEngine()
     {
+        // Get the .NET Runtime's path first
+        const auto DOT_NET_PATH = getDotNetRuntimePath();
+        if (DOT_NET_PATH.empty())
+            throw std::runtime_error("Failed to find .NET Runtime.");
+
         // Get the current executable directory so that we can find the coreclr.dll to load
         std::string runtimePath(MAX_PATH, '\0');
         GetModuleFileNameA(nullptr, runtimePath.data(), MAX_PATH);
@@ -95,11 +100,10 @@ namespace Core
         std::filesystem::current_path(runtimePath);
 
         // Construct the CoreCLR path
-        std::string coreClrPath(runtimePath); // Works
-        coreClrPath += "\\coreclr.dll";
+        const std::string CORE_CLR_PATH = DOT_NET_PATH + "\\coreclr.dll";
 
         // Load the CoreCLR DLL
-        coreClr = LoadLibraryExA(coreClrPath.c_str(), nullptr, 0);
+        coreClr = LoadLibraryExA(CORE_CLR_PATH.c_str(), nullptr, 0);
         if (!coreClr)
             throw std::runtime_error("Failed to load CoreCLR.");
 
@@ -109,7 +113,7 @@ namespace Core
         shutdownCoreClr       = getCoreClrFuncPtr<coreclr_shutdown_ptr>("coreclr_shutdown");
 
         // Step 3: Construct AppDomain properties used when starting the runtime
-        std::string tpaList = buildTpaList(runtimePath);
+        std::string tpaList = buildTpaList(runtimePath) + buildTpaList(DOT_NET_PATH);
 
         // Define CoreCLR properties
         std::array propertyKeys =
@@ -159,7 +163,7 @@ namespace Core
     std::string Application::buildTpaList(const std::string& directory)
     {
         // Constants
-        static const std::string SEARCH_PATH = directory + "\\*.dll";
+        const std::string SEARCH_PATH = directory + "\\*.dll";
         static constexpr char PATH_DELIMITER = ';';
 
         // Create a osstream object to compile the string
@@ -261,5 +265,55 @@ namespace Core
         {
             throw std::runtime_error("Failed to build managed scripts!");
         }
+    }
+    std::string Application::getDotNetRuntimePath() const
+    {
+        // Check if any .NET Runtime is even installed
+        const std::filesystem::path PATH = 
+            std::filesystem::path("C:/Program Files/dotnet/shared/Microsoft.NETCore.App");
+        if (!std::filesystem::exists(PATH))
+            return "";
+
+        // Check all folders in the directory to find versions
+        std::pair<int, std::filesystem::path> latestVer = { -1, {} };
+        for (const auto& DIR_ENTRY : std::filesystem::directory_iterator(PATH))
+        {
+            // Is a file, not a folder
+            if (!DIR_ENTRY.is_directory())
+                continue;
+
+            // Get the directory's name
+            const auto& DIR = DIR_ENTRY.path();
+            const auto& DIR_NAME = (--(DIR.end()))->string();
+            if (DIR_NAME.empty())
+                continue;
+
+            // Get the version number
+            const int VER_NUM = DIR_NAME[0] - '0';
+
+            // We will only naively check major version here and ignore the rest of 
+            // semantic versioning to keep things simple for this sample.
+            if (VER_NUM > latestVer.first)
+            {
+                latestVer = { VER_NUM, DIR };
+            }
+        }
+
+        // Check if we found any valid versions
+        if (latestVer.first >= 0)
+        {
+            // Replace all forward slashes with backslashes 
+            // (.NET can't handle forward slashes)
+            auto dotnetPath = latestVer.second.string();
+            std::replace_if
+            (
+                dotnetPath.begin(), dotnetPath.end(), 
+                [](char c){ return c == '/'; }, 
+                '\\'
+            );
+            return dotnetPath;
+        }
+
+        return "";
     }
 }

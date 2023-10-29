@@ -36,6 +36,7 @@ namespace Core
         void stopScriptEngine();
         std::string buildTpaList(const std::string& directory);
         void compileScriptAssembly();
+        std::string getDotNetRuntimePath() const;
 
         // References to CoreCLR key components
         HMODULE coreClr = nullptr;
